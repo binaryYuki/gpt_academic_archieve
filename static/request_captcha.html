@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>输入验证码</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.1.2/dist/tailwind.min.css" rel="stylesheet">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
+    body {
+      font-family: 'Poppins', sans-serif;
+    }
+  </style>
+</head>
+<body class="bg-blue-200 h-screen">
+  <div class="flex items-center justify-center h-full">
+    <div class="bg-white p-10 rounded-xl shadow-md w-96">
+      <div class="flex justify-center">
+        <img class="h-16 w-auto" src="/static/img.png" alt="Logo" />
+      </div>
+      <h2 class="text-center text-3xl font-semibold text-gray-900 mt-4">
+        输入验证码
+      </h2>
+      <form action="/api/v1/email/verify_captcha" method="POST" id="verify-form" class="mt-8 space-y-6">
+        <div>
+          <label for="verification-code" class="text-gray-600 mb-2 block">验证码</label>
+          <input id="verification-code" name="code" type="text" autocomplete="one-time-code" required placeholder="123456" class="appearance-none rounded-lg w-full py-3 px-4 leading-tight focus:outline-none focus:shadow-outline border border-gray-300 focus:border-indigo-500 text-gray-600" />
+        </div>
+        <div class="mt-8">
+          <button id="submit-button" type="submit" class="w-full bg-indigo-600 text-white rounded-lg py-3 hover:bg-indigo-700">验证</button>
+        </div>
+      </form>
+      <p class="mt-8 text-center text-sm text-gray-600">
+        没有收到验证码?
+      </p>
+      <button id="resend-button" class="w-full bg-gray-500 text-white rounded-lg py-3 mt-4 cursor-not-allowed" disabled>
+        重新发送验证码 (<span id="countdown">60</span> 秒)
+      </button>
+      <br></br>
+      <div class="text-center mt-4 text-gray-600">
+        <a>Powered by </a><a href="https://github.com/binaryYuki" class="text-indigo-600">binaryYuki</a>
+      </div>
+    </div>
+  </div>
+  <script>
+    document.getElementById('verify-form').addEventListener('submit', function(event) {
+      event.preventDefault();
+      var code = document.getElementById('verification-code').value;
+      var data = {
+        timestamp: Date.now(),
+        code: code
+      };
+      fetch(event.target.action, {
+        method: event.target.method,
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      }).then(function(response) {
+        return response.json();
+      }).then(function(data) {
+        console.log(data);
+      });
+    });
+
+    function startCountdown(seconds) {
+      var countdownElement = document.getElementById('countdown');
+      var resendButton = document.getElementById('resend-button');
+      resendButton.disabled = true;
+      resendButton.classList.remove('bg-black', 'hover:bg-gray-800', 'cursor-pointer');
+      resendButton.classList.add('bg-gray-500', 'cursor-not-allowed');
+      countdownElement.textContent = seconds;
+
+      var interval = setInterval(function() {
+        seconds--;
+        countdownElement.textContent = seconds;
+        if (seconds <= 0) {
+          clearInterval(interval);
+          resendButton.disabled = false;
+          resendButton.classList.remove('bg-gray-500', 'cursor-not-allowed');
+          resendButton.classList.add('bg-black', 'hover:bg-gray-800', 'cursor-pointer');
+          countdownElement.textContent = '';
+          resendButton.textContent = '重新发送验证码';
+        }
+      }, 1000);
+    }
+
+    function resendCode() {
+      fetch('/resend/code', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ timestamp: Date.now() })
+      }).then(function(response) {
+        if (response.ok) {
+          startCountdown(60);
+        }
+        return response.json();
+      }).then(function(data) {
+        console.log(data);
+      });
+    }
+
+    document.getElementById('resend-button').addEventListener('click', function() {
+      if (!this.disabled) {
+        resendCode();
+      }
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+      startCountdown(2);
+    });
+  </script>
+</body>
+</html>

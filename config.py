@@ -8,11 +8,11 @@
 """
 
 # [step 1]>> API_KEY = "sk-123456789xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx123456789"。极少数情况下，还需要填写组织（格式如org-123456789abcdefghijklmno的），请向下翻，找 API_ORG 设置项
-API_KEY = "此处填API密钥"    # 可同时填写多个API-KEY，用英文逗号分割，例如API_KEY = "sk-openaikey1,sk-openaikey2,fkxxxx-api2dkey3,azure-apikey4"
+API_KEY = "sk-qQkyZqiYeivp9moeCd3550C018E347378e47397aA1F22682"    # 可同时填写多个API-KEY，用英文逗号分割，例如API_KEY = "sk-openaikey1,sk-openaikey2,fkxxxx-api2dkey3,azure-apikey4"
 
 
 # [step 2]>> 改为True应用代理，如果直接在海外服务器部署，此处不修改；如果使用本地或无地域限制的大模型时，此处也不需要修改
-USE_PROXY = False
+USE_PROXY = True
 if USE_PROXY:
     """
     代理网络的地址，打开你的代理软件查看代理协议(socks5h / http)、地址(localhost)和端口(11284)
@@ -24,26 +24,20 @@ if USE_PROXY:
     """
     proxies = {
         #          [协议]://  [地址]  :[端口]
-        "http":  "socks5h://localhost:11284",  # 再例如  "http":  "http://127.0.0.1:7890",
-        "https": "socks5h://localhost:11284",  # 再例如  "https": "http://127.0.0.1:7890",
+        "http":  "http://127.0.0.1:7890",  # 再例如  "http":  "http://127.0.0.1:7890",
+        "https": "http://127.0.0.1:7890",  # 再例如  "https": "http://127.0.0.1:7890",
     }
 else:
     proxies = None
 
 # [step 3]>> 模型选择是 (注意: LLM_MODEL是默认选中的模型, 它*必须*被包含在AVAIL_LLM_MODELS列表中 )
-LLM_MODEL = "gpt-3.5-turbo-16k" # 可选 ↓↓↓
-AVAIL_LLM_MODELS = ["gpt-4-1106-preview", "gpt-4-turbo-preview", "gpt-4-vision-preview",
-                    "gpt-4o", "gpt-4-turbo", "gpt-4-turbo-2024-04-09",
-                    "gpt-3.5-turbo-1106", "gpt-3.5-turbo-16k", "gpt-3.5-turbo", "azure-gpt-3.5",
-                    "gpt-4", "gpt-4-32k", "azure-gpt-4", "glm-4", "glm-4v", "glm-3-turbo",
-                    "gemini-pro", "chatglm3"
-                    ]
+LLM_MODEL = "gpt-4o" # 可选 ↓↓↓
+AVAIL_LLM_MODELS = ["gpt-4o", "gpt-4-turbo","gpt-4", "azure-gpt-4-32k", "azure-gpt-4","其他需求请使用 lobe-chat"]
 # --- --- --- ---
 # P.S. 其他可用的模型还包括
 # AVAIL_LLM_MODELS = [
-#   "glm-4-0520", "glm-4-air", "glm-4-airx", "glm-4-flash",
 #   "qianfan", "deepseekcoder",
-#   "spark", "sparkv2", "sparkv3", "sparkv3.5", "sparkv4",
+#   "spark", "sparkv2", "sparkv3", "sparkv3.5",
 #   "qwen-turbo", "qwen-plus", "qwen-max", "qwen-local",
 #   "moonshot-v1-128k", "moonshot-v1-32k", "moonshot-v1-8k",
 #   "gpt-3.5-turbo-0613", "gpt-3.5-turbo-16k-0613", "gpt-3.5-turbo-0125", "gpt-4o-2024-05-13"
@@ -64,7 +58,7 @@ AVAIL_LLM_MODELS = ["gpt-4-1106-preview", "gpt-4-turbo-preview", "gpt-4-vision-p
 # 重新URL重新定向，实现更换API_URL的作用（高危设置! 常规情况下不要修改! 通过修改此设置，您将把您的API-KEY和对话隐私完全暴露给您设定的中间人！）
 # 格式: API_URL_REDIRECT = {"https://api.openai.com/v1/chat/completions": "在这里填写重定向的api.openai.com的URL"}
 # 举例: API_URL_REDIRECT = {"https://api.openai.com/v1/chat/completions": "https://reverse-proxy-url/v1/chat/completions", "http://localhost:11434/api/chat": "在这里填写您ollama的URL"}
-API_URL_REDIRECT = {}
+API_URL_REDIRECT = {"https://api.openai.com/v1/chat/completions": "https://ai.tzpro.xyz/v1/chat/completions"}
 
 
 # 多线程函数插件中，默认允许多少路线程同时访问OpenAI。Free trial users的限制是每分钟3次，Pay-as-you-go users的限制是每分钟3500次
@@ -75,7 +69,7 @@ DEFAULT_WORKER_NUM = 3
 # 色彩主题, 可选 ["Default", "Chuanhu-Small-and-Beautiful", "High-Contrast"]
 # 更多主题, 请查阅Gradio主题商店: https://huggingface.co/spaces/gradio/theme-gallery 可选 ["Gstaff/Xkcd", "NoCrypt/Miku", ...]
 THEME = "Default"
-AVAIL_THEMES = ["Default", "Chuanhu-Small-and-Beautiful", "High-Contrast", "Gstaff/Xkcd", "NoCrypt/Miku"]
+AVAIL_THEMES = ["Default"]
 
 
 # 默认的系统提示词（system prompt）
@@ -103,11 +97,11 @@ TIMEOUT_SECONDS = 30
 
 
 # 网页的端口, -1代表随机端口
-WEB_PORT = -1
+WEB_PORT = 8000
 
 
 # 是否自动打开浏览器页面
-AUTO_OPEN_BROWSER = True
+AUTO_OPEN_BROWSER = False
 
 
 # 如果OpenAI不响应（网络卡顿、代理失败、KEY失效），重试的次数限制
@@ -119,7 +113,7 @@ DEFAULT_FN_GROUPS = ['对话', '编程', '学术', '智能体']
 
 
 # 定义界面上“询问多个GPT模型”插件应该使用哪些模型，请从AVAIL_LLM_MODELS中选择，并在不同模型之间用`&`间隔，例如"gpt-3.5-turbo&chatglm3&azure-gpt-4"
-MULTI_QUERY_LLM_MODELS = "gpt-3.5-turbo&chatglm3"
+MULTI_QUERY_LLM_MODELS = ""
 
 
 # 选择本地模型变体（只有当AVAIL_LLM_MODELS包含了对应本地模型时，才会起作用）
@@ -152,7 +146,7 @@ CONCURRENT_COUNT = 100
 
 
 # 是否在提交时自动清空输入框
-AUTO_CLEAR_TXT = False
+AUTO_CLEAR_TXT = True
 
 
 # 加一个live2d装饰
@@ -166,7 +160,7 @@ AUTHENTICATION = []
 
 # 如果需要在二级路径下运行（常规情况下，不要修改!!）
 # （举例 CUSTOM_PATH = "/gpt_academic"，可以让软件运行在 http://ip:port/gpt_academic/ 下。）
-CUSTOM_PATH = "/"
+CUSTOM_PATH = "/zh-cn"
 
 
 # HTTPS 秘钥和证书（不需要修改）
@@ -190,7 +184,29 @@ AZURE_ENGINE = "填入你亲手写的部署名"            # 读 docs\use_azure.
 
 
 # 如果需要使用AZURE（方法二：多个azure模型部署+动态切换）详情请见额外文档 docs\use_azure.md
-AZURE_CFG_ARRAY = {}
+AZURE_CFG_ARRAY = {
+    "azure-gpt-35-turbo": # 第一个模型，azure模型必须以"azure-"开头，注意您还需要将"azure-gpt-3.5"加入AVAIL_LLM_MODELS（模型下拉菜单）
+    {
+        "AZURE_ENDPOINT": "https://ai-tzpro.openai.azure.com/",
+        "AZURE_API_KEY": "1a2c9cf87334407d9c96f73a80a4985c",
+        "AZURE_ENGINE": "gpt-35-turbo",
+        "AZURE_MODEL_MAX_TOKEN": 4096,
+    },
+    "azure-gpt-4":  # 第二个模型，azure模型必须以"azure-"开头，注意您还需要将"azure-gpt-4"加入AVAIL_LLM_MODELS（模型下拉菜单）
+    {
+        "AZURE_ENDPOINT": "https://ai-tzpro.openai.azure.com/",
+        "AZURE_API_KEY": "1a2c9cf87334407d9c96f73a80a4985c",
+        "AZURE_ENGINE": "gpt-4",
+        "AZURE_MODEL_MAX_TOKEN": 4096,  # gpt-4是4096，gpt-4-32k是32768
+    },
+    "azure-gpt-4-32k":  # 第三个模型，azure模型必须以"azure-"开头，注意您还需要将"azure-gpt-3.5-16k"加入AVAIL_LLM_MODELS（模型下拉菜单）
+    {
+        "AZURE_ENDPOINT": "https://ai-tzpro.openai.azure.com/",
+        "AZURE_API_KEY": "1a2c9cf87334407d9c96f73a80a4985c",
+        "AZURE_ENGINE": "gpt-4-32k",
+        "AZURE_MODEL_MAX_TOKEN": 32768,
+    },
+}
 
 
 # 阿里云实时语音识别 配置难度较高
@@ -230,14 +246,8 @@ MOONSHOT_API_KEY = ""
 # 零一万物(Yi Model) API KEY
 YIMODEL_API_KEY = ""
 
-
 # 深度求索(DeepSeek) API KEY，默认请求地址为"https://api.deepseek.com/v1/chat/completions"
 DEEPSEEK_API_KEY = ""
-
-
-# 紫东太初大模型 https://ai-maas.wair.ac.cn
-TAICHU_API_KEY = ""
-
 
 # Mathpix 拥有执行PDF的OCR功能，但是需要注册账号
 MATHPIX_APPID = ""
@@ -269,33 +279,33 @@ GROBID_URLS = [
 ]
 
 
-# Searxng互联网检索服务
-SEARXNG_URL = "https://cloud-1.agent-matrix.com/"
-
-
 # 是否允许通过自然语言描述修改本页的配置，该功能具有一定的危险性，默认关闭
 ALLOW_RESET_CONFIG = False
 
 
 # 在使用AutoGen插件时，是否使用Docker容器运行代码
-AUTOGEN_USE_DOCKER = False
+AUTOGEN_USE_DOCKER = True
 
 
-# 临时的上传文件夹位置，请尽量不要修改
+# 临时的上传文件夹位置，请勿修改
 PATH_PRIVATE_UPLOAD = "private_upload"
 
 
-# 日志文件夹的位置，请尽量不要修改
+# 日志文件夹的位置，请勿修改
 PATH_LOGGING = "gpt_log"
-
 
 # 存储翻译好的arxiv论文的路径，请尽量不要修改
 ARXIV_CACHE_DIR = "gpt_log/arxiv_cache"
 
-
-# 除了连接OpenAI之外，还有哪些场合允许使用代理，请尽量不要修改
+# 除了连接OpenAI之外，还有哪些场合允许使用代理，请勿修改
 WHEN_TO_USE_PROXY = ["Download_LLM", "Download_Gradio_Theme", "Connect_Grobid",
                      "Warmup_Modules", "Nougat_Download", "AutoGen"]
+
+# Searxng互联网检索服务
+SEARXNG_URL = "https://cloud-1.agent-matrix.com/"
+
+# *实验性功能*: 自动检测并屏蔽失效的KEY，请勿使用
+BLOCK_INVALID_APIKEY = False
 
 
 # 启用插件热加载
@@ -393,9 +403,6 @@ NUM_CUSTOM_BASIC_BTN = 4
 
 
 插件在线服务配置依赖关系示意图
-│
-├── 互联网检索
-│   └── SEARXNG_URL
 │
 ├── 语音功能
 │   ├── ENABLE_AUDIO

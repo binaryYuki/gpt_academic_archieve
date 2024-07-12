@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>tzpro 登录链接</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .email-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .email-header {
+            text-align: center;
+            padding: 20px 0;
+            background-color: #4CAF50;
+            border-radius: 8px 8px 0 0;
+            color: #ffffff;
+        }
+        .email-body {
+            padding: 20px;
+            color: #333333;
+            line-height: 1.6;
+        }
+        .email-body h2 {
+            color: #4CAF50;
+        }
+        .login-link {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 18px;
+            background-color: #4CAF50;
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 4px;
+            margin: 20px 0;
+        }
+        .login-link:hover {
+            background-color: #45A049;
+        }
+        .email-footer {
+            text-align: center;
+            padding: 20px;
+            font-size: 12px;
+            color: #777777;
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <div class="email-header">
+            <h1>tzpro 登录</h1>
+        </div>
+        <div class="email-body">
+            <h2>你好，</h2>
+            <p>感谢您的注册！请点击以下链接完成登录过程：</p>
+            <a href="{{login_link}}" class="login-link">登录您的账户</a>
+            <p>此链接将在10分钟后过期。如果您没有请求此邮件，请忽略。</p>
+            <p>感谢您支持<br>tzpro</p>
+        </div>
+        <div class="email-footer">
+            <p>如果您有任何疑问，请联系我们的支持团队。</p>
+        </div>
+    </div>
+</body>
+</html>

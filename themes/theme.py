@@ -40,6 +40,7 @@ def load_dynamic_theme(THEME):
 
 
 adjust_theme, advanced_css, theme_declaration, _ = load_dynamic_theme(get_conf("THEME"))
+print(theme_declaration)
 
 
 """
