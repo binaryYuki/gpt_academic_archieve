@@ -1,6 +1,71 @@
 // 标志位
 enable_tts = false;
 
+// 定义弹窗样式
+const style = document.createElement('style');
+style.innerHTML = `
+    #sessionWarning {
+        display: none;
+        position: fixed;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        padding: 20px;
+        background-color: white;
+        border: 2px solid black;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+    }
+    #sessionWarning button {
+        margin-top: 10px;
+    }
+    #sessionOverlay {
+        display: none;
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 999;
+    }
+`;
+
+// 将样式添加到页面头部
+document.head.appendChild(style);
+
+// 创建弹窗和遮罩
+const overlay = document.createElement('div');
+overlay.id = 'sessionOverlay';
+
+const warning = document.createElement('div');
+warning.id = 'sessionWarning';
+warning.innerHTML = `
+    <p>Session 即将过期，请及时保存聊天记录。</p>
+    <button onclick="closeWarning()">关闭</button>
+`;
+
+// 将遮罩和弹窗添加到页面
+document.body.appendChild(overlay);
+document.body.appendChild(warning);
+
+// 显示弹窗和遮罩的函数
+function showWarning() {
+    overlay.style.display = 'block';
+    warning.style.display = 'block';
+}
+
+// 关闭弹窗和遮罩的函数
+function closeWarning() {
+    overlay.style.display = 'none';
+    warning.style.display = 'none';
+}
+
+// 50秒后显示弹窗
+// setTimeout(showWarning, 50000);
+setTimeout(showWarning, 5000);
+
+
 // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 //  第 1 部分: 工具函数
 // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=

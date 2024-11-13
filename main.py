@@ -341,6 +341,22 @@ def main():
         threading.Thread(target=warm_up_mods, name="warm-up",      daemon=True).start() # 预热tiktoken模块
         if get_conf('AUTO_OPEN_BROWSER'):
             threading.Thread(target=open_browser, name="open-browser", daemon=True).start() # 打开浏览器页面
+        from redis import Redis
+
+        try:
+            from dotenv import load_dotenv
+
+            load_dotenv()
+            redisConnString = os.getenv("REDIS_CONN_STRING")
+            print(f"Redis连接字符串：{redisConnString}" + (f"，已成功连接！" if Redis.from_url(redisConnString).ping() else "，连接失败！"))
+        except:
+            raise RuntimeError("Please set the REDIS_CONN_STRING environment variable.")
+
+        try:
+            redis = Redis.from_url(redisConnString)
+            redis.set("gpt_academic_starting_at", time.time())
+        except:
+            raise RuntimeError("Please set the REDIS_CONN_STRING environment variable.")
 
     # 运行一些异步任务：自动更新、打开浏览器页面、预热tiktoken模块
     run_delayed_tasks()

@@ -44,10 +44,70 @@ queue cocurrent effectiveness
     -- websocket(yes)
 """
 
-import os, requests, threading, time
-import uvicorn
-
+import os, requests, threading
 from shared_utils.routes import emailRouter
+import uvicorn
+import os
+import json
+import time
+import redis.asyncio as redis
+from typing import Any, MutableMapping
+from starlette.types import ASGIApp, Scope, Receive, Send
+
+
+class RedisClient:
+    def __init__(self):
+        self.url = os.environ.get("REDIS_CONN_STRING")
+        self.redis = redis.from_url(self.url, decode_responses=True)
+
+    async def get(self, key: str) -> Any:
+        value = await self.redis.get(key)
+        print(f"\033[33mRedis GET: Key={key}, Value={value}\033[0m")  # 添加日志信息
+        return value
+
+    async def set(self, key: str, value: str):
+        await self.redis.set(key, value)
+        print(f"\033[33mRedis SET: Key={key}, Value={value}\033[0m")  # 添加日志信息
+
+
+async def get_redis() -> RedisClient:
+    return RedisClient()
+
+
+async def is_valid_json(json_data_str):
+    try:
+        data = json.loads(json_data_str)
+        if isinstance(data, dict) and len(data) == 2:
+            return True
+        else:
+            return False
+    except json.JSONDecodeError:
+        return False
+
+
+def simulate_response(input_data):
+    # 解析输入数据
+    data = json.loads(input_data)
+
+    # 模拟 session 过期的情况
+    session_expired_warning = {
+        "msg": "session_expired",
+        "warning": "Session expired, please log in again."
+    }
+
+    # 修改输入数据为 process_completed
+    if data.get("msg") == "process_generating":
+        data["msg"] = "process_completed"
+        data["output"]["data"][1][1][
+            -1] = "<div class=\"markdown-body\"><p>Hello! What would you like to discuss or do today?</p></div>"
+        data["output"]["duration"] = 0.0003917217254638672
+        data["output"]["average_duration"] = 0.06982771249917838
+
+    # 生成日志输出
+    logs = [f"Sent data: {input_data}", f"Received data: {json.dumps(data)}",
+            f"Sent data: {json.dumps(session_expired_warning)}"]
+
+    return logs
 
 
 def validate_path_safety(path_or_url, user):
@@ -231,6 +291,9 @@ def start_app(app_block, CONCURRENT_COUNT, AUTHENTICATION, PORT, SSL_KEYFILE, SS
         async def startup_gradio_app():
             if gradio_app.get_blocks().enable_queue:
                 gradio_app.get_blocks().startup_events()
+            # 清空 redis
+            redis_client = await get_redis()
+            await redis_client.redis.flushall()
 
         async def shutdown_gradio_app():
             pass
@@ -242,11 +305,13 @@ def start_app(app_block, CONCURRENT_COUNT, AUTHENTICATION, PORT, SSL_KEYFILE, SS
     # --- --- FastAPI --- ---
     fastapi_app = FastAPI(lifespan=app_lifespan)
     fastapi_app.mount(CUSTOM_PATH, gradio_app)
-
+    fastapi_app.add_middleware(WebSocketLoggingMiddleware)
     # --- --- favicon and block fastapi api reference routes --- ---
     from starlette.responses import JSONResponse
     if CUSTOM_PATH != '/':
         from fastapi.responses import FileResponse
+        WebSocketLoggingMiddleware
+
         @fastapi_app.get("/favicon.ico")
         async def favicon():
             return FileResponse(app_block.favicon_path)

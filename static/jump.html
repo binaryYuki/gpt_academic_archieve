@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loading Page</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.1.2/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        @keyframes pulse {
+            0% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+    </style>
+</head>
+<body class="bg-black text-center text-white">
+    <div class="flex flex-col items-center justify-center h-screen">
+<!--        <img src="/static/success.svg" class="pulse block w-1/2" alt="Loading..." style="width: 200px;"/>-->
+        <p class="mt-4 text-2xl font-bold pulse -mt-10">身份已识别 正在跳转</p>
+    </div>
+
+    <script>
+        setTimeout(() => {
+            window.location.href = window.location.origin + "/zh-cn";
+        }, 5000); // 5 seconds delay
+    </script>
+</body>
+</html>

@@ -39,3 +39,4 @@ function setSlider() {
 window.addEventListener("DOMContentLoaded", () => {
     set_elements();
 });
+

@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GPT 学术优化</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.1.2/dist/tailwind.min.css" rel="stylesheet">
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
+    body {
+      font-family: 'Poppins', sans-serif;
+    }
+    .overlay {
+      display: none; /* Initially hidden */
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+      animation: fadeIn 0.5s;
+    }
+    .overlay-content {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      text-align: center;
+      animation: slideDown 0.5s;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    @keyframes slideDown {
+      from { transform: translateY(-50px); }
+      to { transform: translateY(0); }
+    }
+  </style>
+</head>
+<body class="bg-blue-200 h-screen">
+  <div class="flex items-center justify-center h-full">
+    <div class="bg-white p-10 rounded-xl shadow-md w-96">
+      <div class="flex justify-center">
+        <img class="h-16 w-auto" src="/static/img.png" alt="Logo" />
+      </div>
+      <h2 class="text-center text-3xl font-semibold text-gray-900 mt-4">
+        登录你的账户
+      </h2>
+      <form action="/api/v1/email/send" method="POST" id="login-form" class="mt-8 space-y-6">
+        <div>
+          <label for="email-address" class="text-gray-600 mb-2 block">电子邮件地址</label>
+          <input id="email-address" name="email" type="email" autocomplete="email" required placeholder="example@example.com" class="appearance-none rounded-lg w-full py-3 px-4 leading-tight focus:outline-none focus:shadow-outline border border-gray-300 focus:border-indigo-500 text-gray-600" />
+          <br><br>
+          <div class="cf-turnstile" data-sitekey="0x4AAAAAAAd4wvwK-U2FFU98" data-callback="javascriptCallback"></div>
+        </div>
+        <div class="mt-8">
+          <button id="submit-button" type="submit" class="w-full bg-indigo-600 text-white rounded-lg py-3 hover:bg-indigo-700" disabled>登录</button>
+        </div>
+      </form>
+      <p class="mt-8 text-center text-sm text-gray-600">
+        或
+      </p>
+      <button class="w-full bg-black text-white rounded-lg py-3 mt-4 hover:bg-gray-800" onclick="redirectToGitHub()">
+        使用 GitHub 登录
+      </button>
+      <br></br>
+      <div class="text-center mt-4 text-gray-600">
+        <a>Powered by </a><a href="https://github.com/binaryYuki" class="text-indigo-600">binaryYuki</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Overlay for success message -->
+  <div class="overlay" id="success-overlay">
+    <div class="overlay-content">
+      <h3>发送成功</h3>
+      <p>请检查您的邮箱。</p>
+      <p>如果您没有收到邮件，请检查您的垃圾邮件文件夹。</p>
+      <p>本窗口将在 <span id="countdown">60</span> 秒后自动关闭。</p>
+      <p>届时，您可以重新发送登录链接。</p>
+    </div>
+  </div>
+
+  <script>
+    function showSuccessOverlay() {
+      var overlay = document.getElementById('success-overlay');
+      var countdownElement = document.getElementById('countdown');
+      var countdown = 60;
+
+      overlay.style.display = 'flex';
+
+      var interval = setInterval(function() {
+        countdown--;
+        countdownElement.textContent = countdown;
+        if (countdown <= 0) {
+          clearInterval(interval);
+          overlay.style.display = 'none';
+          window.close();
+        }
+      }, 1000);
+    }
+
+    document.getElementById('login-form').addEventListener('submit', function(event) {
+      event.preventDefault();
+      var email = document.getElementById('email-address').value;
+      var data = {
+        timestamp: Date.now(),
+        email: email
+      };
+      fetch(event.target.action, {
+        method: event.target.method,
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      }).then(function(response) {
+        if (response.ok) {
+          showSuccessOverlay();
+        }
+        return response.json();
+      }).then(function(data) {
+        console.log(data);
+      });
+    });
+
+    function redirectToGitHub() {
+      window.location.href = '/login/oauth/github';
+    }
+
+    // This function will be called once the Turnstile is successfully completed
+    function javascriptCallback(token) {
+      // Enable the submit button
+      document.getElementById('submit-button').disabled = false;
+      document.getElementById('submit-button').classList.remove('bg-gray-500', 'hover:bg-gray-600');
+      document.getElementById('submit-button').classList.add('bg-indigo-600', 'hover:bg-indigo-700');
+    }
+
+    // Disable the submit button initially
+    document.addEventListener('DOMContentLoaded', function () {
+      var submitButton = document.getElementById('submit-button');
+      submitButton.disabled = true;
+      submitButton.classList.remove('bg-indigo-600', 'hover:bg-indigo-700');
+      submitButton.classList.add('bg-gray-500', 'hover:bg-gray-600');
+    });
+  </script>
+</body>
+</html>

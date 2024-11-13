@@ -45,7 +45,7 @@ timezone = 8
 token = str(int(time.time() / 60) * 60 + 60 * timezone)  # 生成 token
 
 # 设定 API 的 URL
-url = "https://ac-hk.tzpro.xyz/user/add"
+url = "https://ac-hk.tzpro.uk/user/add"
 
 # 设定 headers
 headers = {
@@ -53,7 +53,7 @@ headers = {
     "Content-Type": "application/json"
 }
 
-username = "akkk1234"
+username = "Austin-152"
 
 # 加密用户名
 encrypted_username = encrypt_message(username).hex()  # 这个 hex() 是为了将 bytes 转换为字符串
